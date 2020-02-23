@@ -1,9 +1,9 @@
 const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
-const client_id = "Iv1.486146f10968a550";
-const client_secret = "c266cb826eb011a94b1df89d78afa74f20cbb72e";
-let line1;
+const client_id = "e453eff3c6172e2529ca";
+const client_secret = "5a8417850e7a13ec164e50364b4c6fabf0ba5523";
+
 const questions = [
     {
         type: "input",
@@ -50,34 +50,32 @@ function getInfo() {
     inquirer.prompt(questions).then(answers => {
         console.log(answers);
 
-        info = `# ${answers.title}
+        info = `
+# ${answers.title}
   
-  ## Project Description
-  ${answers.description}
+## Project Description
+${answers.description}
 
-  ## Installation
-  ${answers.installation}
+## Installation
+${answers.installation}
 
-  ## Usage
-  ${answers.usage}
+## Usage
+${answers.usage}
 
-  ## Licence
-  ${answers.license}
+## Licence
+${answers.license}
 
-  ## Contributors
-  ${answers.contributors}
+## Contributors
+${answers.contributors}
 
-  ## Tests
-  ${answers.tests}`;
+## Tests
+${answers.tests}`;
 
-
-        fs.writeFile("newREADME.md", info, function (err) {
+        fs.appendFile("newREADME.md", info, function (err) {
 
             if (err) {
                 return console.log(err);
             }
-            console.log("Success!");
-
         });
     });
 }
@@ -90,47 +88,22 @@ async function getUser() {
         message: "Enter your GitHub username:"
     });
     const queryUrl = `https://api.github.com/users/${username}?client_id=${client_id}&client_secret=${client_secret}`;
+    // const queryUrl = `https://api.github.com/login/oauth/authorize?scope=${username}:email&client_id=${client_id}&client_secret=${client_secret}`;
     const { data } = await axios.get(queryUrl);
     const email = data.email;
     const avatar = data.avatar_url;
-}
-
-// create layout for readme file  
-function generateMarkdown(answers) {
-    return `
-  # ${answers.title}
+    const profile = `![Profile Pic](${avatar}) 
   
-  # Project Description
-  ${answers.description}
+Username: ${username}<br>
+Email: ${email}<br>`;
 
-  # Installation
-  ${answers.installation}
+    fs.writeFile(`newREADME.md`, profile, function (err) {
 
-  # Usage
-  ${answers.usage}
-
-  # Licence
-  ${answers.license}
-
-  # Contributors
-  ${answers.contributors}
-
-  # Tests
-  ${answers.tests}
-  `;
-
+        if (err) {
+            return console.log(err);
+        }
+    });
 }
-
-// create readme file
-
-// fs.writeFile("newREADME.md", line1, function (err) {
-
-//     if (err) {
-//         return console.log(err);
-//     }
-//     console.log("Success!");
-
-// });
 
 getUser().then(() => getInfo());
 
