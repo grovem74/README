@@ -1,8 +1,9 @@
 const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
-const client_id= "Iv1.486146f10968a550";
-const client_secret ="c266cb826eb011a94b1df89d78afa74f20cbb72e";
+const client_id = "Iv1.486146f10968a550";
+const client_secret = "c266cb826eb011a94b1df89d78afa74f20cbb72e";
+let line1;
 const questions = [
     {
         type: "input",
@@ -48,6 +49,36 @@ const questions = [
 function getInfo() {
     inquirer.prompt(questions).then(answers => {
         console.log(answers);
+
+        info = `# ${answers.title}
+  
+  ## Project Description
+  ${answers.description}
+
+  ## Installation
+  ${answers.installation}
+
+  ## Usage
+  ${answers.usage}
+
+  ## Licence
+  ${answers.license}
+
+  ## Contributors
+  ${answers.contributors}
+
+  ## Tests
+  ${answers.tests}`;
+
+
+        fs.writeFile("newREADME.md", info, function (err) {
+
+            if (err) {
+                return console.log(err);
+            }
+            console.log("Success!");
+
+        });
     });
 }
 
@@ -62,8 +93,6 @@ async function getUser() {
     const { data } = await axios.get(queryUrl);
     const email = data.email;
     const avatar = data.avatar_url;
-    console.log(queryUrl);
-    console.log(`email: ${email} avatar: ${avatar}`);
 }
 
 // create layout for readme file  
@@ -94,7 +123,7 @@ function generateMarkdown(answers) {
 
 // create readme file
 
-// fs.writeFile("newREADME.md", "test", function (err) {
+// fs.writeFile("newREADME.md", line1, function (err) {
 
 //     if (err) {
 //         return console.log(err);
