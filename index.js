@@ -62,7 +62,7 @@ ${answers.installation}
 ## Usage
 ${answers.usage}
 
-## Licence
+## License
 ${answers.license}
 
 ## Contributors
