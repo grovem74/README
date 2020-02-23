@@ -71,23 +71,30 @@ function generateMarkdown(answers) {
     return `
   # ${answers.title}
   
-  # ${answers.description}
+  # Project Description
+  ${answers.description}
 
-  # ${answers.installation}
+  # Installation
+  ${answers.installation}
 
-  # ${answers.usage}
+  # Usage
+  ${answers.usage}
 
-  # ${answers.license}
+  # Licence
+  ${answers.license}
 
-  # ${answers.contributors}
+  # Contributors
+  ${answers.contributors}
 
-  # ${answers.tests}
+  # Tests
+  ${answers.tests}
   `;
+
 }
 
 // create readme file
 
-// fs.writeFile("README.md", "test", function (err) {
+// fs.writeFile("newREADME.md", "test", function (err) {
 
 //     if (err) {
 //         return console.log(err);
