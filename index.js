@@ -11,9 +11,63 @@ const questions = [
         message: "What is the name of your project?"
     },
     {
+        type: "list",
+        name: "status",
+        message: "What is the status of your project?",
+        choices: ["Complete", "In progress"]
+    },
+    {
+        type: "confirm",
+        name: "badge",
+        message: "Would you like to add a badge? (see https://shields.io/ for info on badges)",
+        default: "No"
+    },
+    {
+        type: "input",
+        name: "badgeName",
+        message: "Enter a badge name:",
+        when: function (answers) {
+            return answers.badge === true;
+        }
+    },
+    {
+        type: "input",
+        name: "badgeUrl",
+        message: "Enter the badge url:",
+        when: function (answers) {
+            return answers.badge === true;
+        }
+    },
+    {
+        type: "confirm",
+        name: "badge2",
+        message: "Would you like to add another badge?",
+        default: "No",
+        when: function (answers) {
+            return answers.badge === true;
+        }
+    },
+
+    {
+        type: "input",
+        name: "badgeName2",
+        message: "Enter a badge name:",
+        when: function (answers) {
+            return answers.badge2 === true;
+        }
+    },
+    {
+        type: "input",
+        name: "badgeUrl2",
+        message: "Enter the badge url:",
+        when: function (answers) {
+            return answers.badge2 === true;
+        }
+    },
+    {
         type: "input",
         name: "description",
-        message: "Describe your project:"
+        message: "Describe your project:",
     },
     {
         type: "input",
@@ -24,7 +78,7 @@ const questions = [
     {
         type: "input",
         name: "usage",
-        message: "How is your application used?"
+        message: "How is your application used?",
     },
     {
         type: "input",
@@ -49,26 +103,57 @@ const questions = [
 function getInfo() {
     inquirer.prompt(questions).then(answers => {
         console.log(answers);
+        let projectStatus;
+        let addBadge = answers.badge;
+        let addBadge2 = answers.badge2;
+        let newBadge;
+        let newBadge2;
+        let badgeName = answers.badgeName;
+        let badgeUrl = answers.badgeUrl;
+        let badgeName2 = answers.badgeName2;
+        let badgeUrl2 = answers.badgeUrl2;
+    
+        if (answers.status === "Complete") {
+            projectStatus = `![Project Status](https://img.shields.io/badge/status-complete-green)&nbsp; `;
+        } else {
+            projectStatus = `![Project Status](https://img.shields.io/badge/status-in_progress-orange)&nbsp;`;
+        }
+
+        if (addBadge === true) {
+            newBadge = `![${badgeName}](${badgeUrl})&nbsp;`;
+        } else {
+            newBadge = "";
+        }
+
+        if (addBadge2 === true) {
+            newBadge2 = `![${badgeName2}](${badgeUrl2})&nbsp;`;
+        } else {
+            newBadge2 = "";
+        }
+
 
         info = `
+     
 # ${answers.title}
-  
-## Project Description
+
+${projectStatus} ${newBadge} ${newBadge2}   
+
+### Project Description
 ${answers.description}
 
-## Installation
+### Installation
 ${answers.installation}
 
-## Usage
+### Usage
 ${answers.usage}
 
-## License
+### License
 ${answers.license}
 
-## Contributors
+### Contributors
 ${answers.contributors}
 
-## Tests
+### Tests
 ${answers.tests}`;
 
         fs.appendFile("newREADME.md", info, function (err) {
