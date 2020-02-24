@@ -3,7 +3,6 @@ const axios = require("axios");
 const inquirer = require("inquirer");
 const client_id = "e453eff3c6172e2529ca";
 const client_secret = "5a8417850e7a13ec164e50364b4c6fabf0ba5523";
-
 const questions = [
     {
         type: "input",
@@ -42,7 +41,7 @@ const questions = [
         type: "confirm",
         name: "badge2",
         message: "Would you like to add another badge?",
-        default: "No",
+        default: false,
         when: function (answers) {
             return answers.badge === true;
         }
@@ -81,10 +80,19 @@ const questions = [
         message: "How is your application used?",
     },
     {
-        type: "input",
+        type: "list",
         name: "license",
-        message: "Is there any licensing information?",
-        default: "N/A"
+        message: "License information:",
+        choices: ["MIT License", "Other License", "No License"],
+        default: "MIT License"
+    },
+    {
+        type: "input",
+        name: "otherLicense",
+        message: "Enter License text:",
+        when: function (answers) {
+            return answers.license === "Other License";
+        }
     },
     {
         type: "input",
@@ -112,7 +120,31 @@ function getInfo() {
         let badgeUrl = answers.badgeUrl;
         let badgeName2 = answers.badgeName2;
         let badgeUrl2 = answers.badgeUrl2;
-    
+        let license = answers.license;
+        const otherLicense = answers.otherLicense;
+        const MIT = `MIT License
+
+Copyright (c) [year] [fullname]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`
+
+
         if (answers.status === "Complete") {
             projectStatus = `![Project Status](https://img.shields.io/badge/status-complete-green)&nbsp; `;
         } else {
@@ -131,6 +163,13 @@ function getInfo() {
             newBadge2 = "";
         }
 
+        if (license === "MIT") {
+            licenseText === `${MIT}`;
+        } else if (license === "Other License") {
+            licenseText = `${otherLicense}`;
+        } else {
+            licenseText = "";
+        }
 
         info = `
      
@@ -140,6 +179,13 @@ ${projectStatus} ${newBadge} ${newBadge2}
 
 ### Project Description
 ${answers.description}
+
+### Table of Contents
+* [Installation](#installation)
+* [Usage](#usage)
+* [License](#tests)
+* [Contributors](#contributors)
+* [Tests](#tests)
 
 ### Installation
 ${answers.installation}
