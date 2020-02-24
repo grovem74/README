@@ -18,7 +18,7 @@ This application requires the following NPM modules:
 
 The user is prompted for information about the project. Once all the information is gathered, a new README file is generated.
 
-# Licence
+# License
 
 N/A
 
